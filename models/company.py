@@ -12,4 +12,4 @@ class Company(db.Model):
     logo = db.Column(db.String(255), nullable=True)  # Optional logo URL
     contact_email = db.Column(db.String(100), nullable=False)
 
-    jobs = db.relationship('Job', backref='company', lazy=True)
+    jobs = db.relationship('Job', lazy=True)

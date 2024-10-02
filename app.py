@@ -1,10 +1,16 @@
+from models.application import Application
+from models.job import Job
+from models.company import Company
+from models.user import User
+from routes.user_routes import user_router
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 from config import Config
 from dotenv import load_dotenv
-from models import Job, Company, User, Application
-from db import db
+
+from db import db, close_db
 
 
 # Load environment variables from .env file
@@ -12,20 +18,30 @@ load_dotenv()
 
 # Initialize the Flask application
 app = Flask(__name__)
-
-# Load configuration from config.py
 app.config.from_object(Config)
 
-# Initialize SQLAlchemy
-db = SQLAlchemy(app)
+# Register the blueprints
+app.register_blueprint(user_router, url_prefix='/api/users')
+
+# Initialize the database
+db.init_app(app)
 
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
+# Initialize JWT
+jwt = JWTManager(app)
+
+
+# Register teardown function to clean up the database session
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    close_db()
+
 
 # Create the database tables if they don't exist
 with app.app_context():
-    db.create_all()  # This can be removed after you start using migrations
+    db.create_all()
 
 
 @app.route('/')

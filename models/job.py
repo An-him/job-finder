@@ -18,4 +18,4 @@ class Job(db.Model):
     job_status = db.Column(db.String(20), default='active')
     application_link = db.Column(db.String(255), nullable=False)
 
-    company = db.relationship('Company', backref=db.backref('jobs', lazy=True))
+    company = db.relationship('Company', back_populates='jobs', lazy=True)
