@@ -53,7 +53,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    return 'Hello, World!'
+    return 'This is the Job Board API'
 
 
 if __name__ == '__main__':
