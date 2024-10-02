@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from config import Config
 from dotenv import load_dotenv
 from models import Job, Company, User, Application
+from db import db
+
 
 # Load environment variables from .env file
 load_dotenv()
