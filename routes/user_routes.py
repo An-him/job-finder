@@ -34,7 +34,7 @@ def register_user():
 
 @user_router.route('/login', methods=['POST'])
 def login():
-    db: Session = next(get_db())
+    db: Session = get_db()
 
     # Extracting data from request
     data = request.json
@@ -46,13 +46,13 @@ def login():
         return jsonify({'error': 'Invalid email or password'}), 401
 
     access_token = create_access_token(identity=user.id)
-    return jsonify(access_token=access_token), 200
+    return jsonify(message='Login successful', access_token=access_token)
 
 
 @user_router.route('/', methods=['GET'])
 @jwt_required()
 def get_users():
-    db: Session = next(get_db())
+    db: Session = get_db()
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
     search = request.args.get('search', '')
@@ -72,7 +72,7 @@ def get_users():
 @user_router.route('/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user(user_id: int):
-    db: Session = next(get_db())
+    db: Session = get_db()
     if user := User.find_by_id(db, user_id):
         return jsonify(user.to_dict()), 200
     else:
@@ -82,7 +82,7 @@ def get_user(user_id: int):
 @user_router.route('/<int:user_id>', methods=['PUT'])
 @jwt_required()
 def update_user(user_id: int):
-    db: Session = next(get_db())
+    db: Session = get_db()
     current_user_id = get_jwt_identity()
 
     if current_user_id != user_id:
@@ -106,7 +106,7 @@ def update_user(user_id: int):
 @user_router.route('/<int:user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(user_id: int):
-    db: Session = next(get_db())
+    db: Session = get_db()
     current_user_id = get_jwt_identity()
 
     if current_user_id != user_id:

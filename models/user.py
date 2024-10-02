@@ -44,6 +44,17 @@ class User(db.Model):
         """
         return db.query(cls).filter_by(email=email).first()
 
+    @classmethod
+    def filter_by_fullname(cls, db_session, fullname):
+        return db_session.query(cls).filter(cls.fullname.ilike(f"%{fullname}%"))
+
+    @classmethod
+    def find_by_id(cls, db: Session, user_id: int):
+        """
+        Find a user by ID.
+        """
+        return db.query(cls).filter_by(id=user_id).first()
+
     def save(self, db: Session):
         """
         Save the user to the database.

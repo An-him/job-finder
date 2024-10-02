@@ -3,6 +3,7 @@
         "appcontext",
         "backref",
         "dotenv",
+        "ilike",
         "jsonify",
         "werkzeug"
     ]
