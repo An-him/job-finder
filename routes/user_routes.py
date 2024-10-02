@@ -117,4 +117,4 @@ def delete_user(user_id: int):
         return jsonify({'error': 'User not found'}), 404
 
     user.delete(db)
-    return '', 204
+    return 'message: User deleted successfully', 204
