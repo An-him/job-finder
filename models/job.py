@@ -19,3 +19,19 @@ class Job(db.Model):
     application_link = db.Column(db.String(255), nullable=False)
 
     company = db.relationship('Company', back_populates='jobs', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'job_title': self.job_title,
+            'description': self.description,
+            'job_type': self.job_type,
+            'location': self.location,
+            'date_posted': self.date_posted,
+            'application_deadline': self.application_deadline,
+            'category': self.category,
+            'company_id': self.company_id,
+            'experience_level': self.experience_level,
+            'job_status': self.job_status,
+            'application_link': self.application_link
+        }
