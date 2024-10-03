@@ -34,7 +34,12 @@ class User(db.Model):
             'fullname': self.fullname,
             'email': self.email,
             'role': self.role,
-            'date_created': self.date_created.isoformat()
+            'date_created': self.date_created.isoformat(),
+            'skills': self.skills,
+            'location': self.location,
+            'experience_level': self.experience_level,
+            'profile_picture': self.profile_picture,
+            'resume': self.resume,
         }
 
     @classmethod

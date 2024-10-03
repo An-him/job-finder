@@ -1,11 +1,20 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from sqlalchemy.orm import Session
 from db import get_db
 from models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import os
 
 user_router = Blueprint('user', __name__)
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx'}
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @user_router.route('/register', methods=['POST'])
@@ -13,7 +22,7 @@ def register_user():
     db: Session = get_db()
 
     # Extracting data from request
-    data = request.json
+    data = request.form  # Use request.form for form-data
     if not data or not all(key in data for key in ['fullname', 'email', 'password']):
         return jsonify({'error': 'Missing required fields'}), 400
 
@@ -25,9 +34,25 @@ def register_user():
     new_user = User(
         fullname=data['fullname'],
         email=data['email'],
-        role='job_seeker',  # Default role, can be modified as needed
+        role='job_seeker',  # Default role
         password_hash=hashed_password
     )
+
+    # Handle file uploads for profile picture and resume
+    if 'profile_picture' in request.files:
+        profile_picture = request.files['profile_picture']
+        if profile_picture and allowed_file(profile_picture.filename):
+            filename = secure_filename(profile_picture.filename)
+            profile_picture.save(os.path.join(UPLOAD_FOLDER, filename))
+            new_user.profile_picture = filename
+
+    if 'resume' in request.files:
+        resume = request.files['resume']
+        if resume and allowed_file(resume.filename):
+            filename = secure_filename(resume.filename)
+            resume.save(os.path.join(UPLOAD_FOLDER, filename))
+            new_user.resume = filename
+
     new_user.save(db)
     return jsonify(new_user.to_dict()), 201
 
@@ -92,12 +117,26 @@ def update_user(user_id: int):
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    data = request.json
+    data = request.form  # Use request.form for updates
     for key, value in data.items():
         if key == 'password':
             setattr(user, 'password_hash', generate_password_hash(value))
         else:
             setattr(user, key, value)
+
+    if 'profile_picture' in request.files:
+        profile_picture = request.files['profile_picture']
+        if profile_picture and allowed_file(profile_picture.filename):
+            filename = secure_filename(profile_picture.filename)
+            profile_picture.save(os.path.join(UPLOAD_FOLDER, filename))
+            user.profile_picture = filename
+
+    if 'resume' in request.files:
+        resume = request.files['resume']
+        if resume and allowed_file(resume.filename):
+            filename = secure_filename(resume.filename)
+            resume.save(os.path.join(UPLOAD_FOLDER, filename))
+            user.resume = filename
 
     user.save(db)
     return jsonify(user.to_dict()), 200
@@ -117,4 +156,4 @@ def delete_user(user_id: int):
         return jsonify({'error': 'User not found'}), 404
 
     user.delete(db)
-    return 'message: User deleted successfully', 204
+    return jsonify(message='User deleted successfully'), 204
