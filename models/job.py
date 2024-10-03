@@ -35,3 +35,24 @@ class Job(db.Model):
             'job_status': self.job_status,
             'application_link': self.application_link
         }
+
+    def save(self, db_session):
+        """Add and commit the current instance to the database."""
+        db_session.add(self)
+        db_session.commit()
+
+    def delete(self, db_session):
+        """Delete the current instance from the database."""
+        db_session.delete(self)
+        db_session.commit()
+
+    def update(self, db_session, **kwargs):
+        """Update the current instance with the given kwargs."""
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        db_session.commit()
+
+    @classmethod
+    def find_by_id(cls, db_session, job_id):
+        """Find a job by its ID."""
+        return db_session.query(cls).filter_by(id=job_id).first()
