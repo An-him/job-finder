@@ -1,6 +1,5 @@
 from datetime import datetime
 from db import db
-
 from sqlalchemy.orm import Session
 
 

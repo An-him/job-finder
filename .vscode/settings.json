@@ -5,8 +5,12 @@
         "appcontext",
         "backref",
         "dotenv",
+        "fullname",
         "ilike",
         "jsonify",
+        "swaggerui",
+        "uvicorn",
+        "venv",
         "werkzeug"
     ]
 }
