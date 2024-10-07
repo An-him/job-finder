@@ -5,7 +5,7 @@ from models.user import User
 from routes.user_routes import user_router
 from routes.job_routes import job_router
 from routes.company_routes import company_router
-# from routes.application_routes import application_router
+from routes.application_routes import application_router
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -58,7 +58,7 @@ def upload_file():
 app.register_blueprint(user_router, url_prefix='/api/users')
 app.register_blueprint(job_router, url_prefix='/api/jobs')
 app.register_blueprint(company_router, url_prefix='/api/companies')
-# app.register_blueprint(application_router, url_prefix='/api/applications')
+app.register_blueprint(application_router, url_prefix='/api/applications')
 
 
 # Initialize the database
