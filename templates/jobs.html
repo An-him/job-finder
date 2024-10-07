@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <title>Job Listings</title>
+  </head>
+  <body>
+    <header>
+      <h1>Job Finder</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/register.html">Register</a>
+        <a href="/login.html">Login</a>
+        <a href="/jobs.html">Jobs</a>
+      </nav>
+    </header>
+    <main>
+      <h2>Job Listings</h2>
+      <input type="text" id="search-input" placeholder="Search for jobs..." />
+      <button id="search-btn">Search</button>
+      <div id="job-listings">
+        <!-- Job listings will be dynamically inserted here -->
+      </div>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
