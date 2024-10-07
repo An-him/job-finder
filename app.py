@@ -6,7 +6,7 @@ from routes.user_routes import user_router
 from routes.job_routes import job_router
 from routes.company_routes import company_router
 # from routes.application_routes import application_router
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -15,12 +15,14 @@ from dotenv import load_dotenv
 from db import db, close_db
 from werkzeug.utils import secure_filename
 import os
+from flask_cors import CORS
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Initialize the Flask application
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(Config)
 
 # File upload configuration
@@ -83,8 +85,28 @@ with app.app_context():
 
 
 @app.route('/')
-def index():
-    return 'This is the Job Board API'
+def home():
+    return render_template('index.html')
+
+
+@app.route('/register.html')
+def register():
+    return render_template('register.html')
+
+
+@app.route('/job_seeker_dashboard.html')
+def dashboard():
+    return render_template('job_seeker_dashboard.html')
+
+
+@app.route('/login.html')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/jobs.html')
+def jobs_page():
+    return render_template('jobs.html')
 
 
 if __name__ == '__main__':

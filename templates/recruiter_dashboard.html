@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <title>Recruiter Dashboard</title>
+  </head>
+  <body>
+    <header>
+      <h1>Recruiter Dashboard</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+    <main>
+      <h2>Post a Job</h2>
+      <form id="post-job-form">
+        <input type="text" id="job_title" placeholder="Job Title" required />
+        <textarea
+          id="description"
+          placeholder="Job Description"
+          required
+        ></textarea>
+        <input type="text" id="job_type" placeholder="Job Type" required />
+        <input type="text" id="category" placeholder="Category" required />
+        <input type="text" id="company_id" placeholder="Company ID" required />
+        <input
+          type="text"
+          id="experience_level"
+          placeholder="Experience Level"
+          required
+        />
+        <input
+          type="text"
+          id="application_link"
+          placeholder="Application Link"
+          required
+        />
+        <button type="submit">Post Job</button>
+      </form>
+
+      <h2>Job Seekers</h2>
+      <div id="job-seeker-list">
+        <!-- Dynamically populate job seekers -->
+      </div>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>

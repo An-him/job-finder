@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template, url_for
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from sqlalchemy.orm import Session
 from db import get_db
@@ -60,8 +60,6 @@ def register_user():
 @user_router.route('/login', methods=['POST'])
 def login():
     db: Session = get_db()
-
-    # Extracting data from request
     data = request.json
     if not data or any(key not in data for key in ['email', 'password']):
         return jsonify({'error': 'Missing required fields'}), 400
@@ -71,8 +69,44 @@ def login():
         return jsonify({'error': 'Invalid email or password'}), 401
 
     access_token = create_access_token(identity=user.id)
-    return jsonify(message='Login successful', access_token=access_token)
 
+    # Redirect based on user role
+    if user.role == 'job_seeker':
+        # Use the endpoint name
+        redirect_url = url_for('user.job_seeker_dashboard')
+    elif user.role == 'recruiter':
+        # Use the endpoint name
+        redirect_url = url_for('user.recruiter_dashboard')
+    else:
+        return jsonify({'error': 'Invalid role'}), 403
+
+    return jsonify({'message': 'Login successful',
+                    'access_token': access_token,
+                    'redirect_url': redirect_url,
+                    'user': user.to_dict()
+                    }), 200
+
+
+@user_router.route('/job_seeker_dashboard')
+@jwt_required()
+def job_seeker_dashboard():
+    current_user_id = get_jwt_identity()
+    db: Session = get_db()
+    user = User.find_by_id(db, current_user_id)
+    if not user or user.role != 'job_seeker':
+        return jsonify({'error': 'Unauthorized'}), 403
+    return render_template('job_seeker_dashboard.html')
+
+
+@user_router.route('/recruiter_dashboard')
+@jwt_required()
+def recruiter_dashboard():
+    current_user_id = get_jwt_identity()
+    db: Session = get_db()
+    user = User.find_by_id(db, current_user_id)
+    if not user or user.role != 'recruiter':
+        return jsonify({'error': 'Unauthorized'}), 403
+    return render_template('recruiter_dashboard.html')
 
 @user_router.route('/', methods=['GET'])
 @jwt_required()
