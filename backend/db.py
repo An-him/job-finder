@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import g
+# from db.db import get_db
 
 # Create a new instance of SQLAlchemy
 db = SQLAlchemy()
